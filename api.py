@@ -1,4 +1,4 @@
-from flask import Flask, make_response, jsonify, request
+from flask import Flask, make_response, jsonify, request,  render_template, redirect, url_for, session
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -8,9 +8,29 @@ app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = "root"
 app.config["MYSQL_DB"] = "maritime"
 app.config["MYSQL_CURSORCLASS"] = "DictCursor"
-
+app.config["SECRET_KEY"] = "mysecret1233123"
 
 mysql = MySQL(app)
+
+users = {'user1': 'password1', 'user2': 'password2'}
+
+@app.route("/")
+def home():
+    return render_template("base.html")
+
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if username in users and users[username] == password:
+            session['username'] = username
+            return redirect(url_for('search_addresses'))  
+
+    return render_template("login.html")
 
 
 @app.route("/")
