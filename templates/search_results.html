@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <h2>Search Results for "{{ search_term }}"</h2>
+    {% if data %}
+        <table border="1">
+            <tr>
+                <th>Address_ID</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Line_1</th>
+                <th>Line_2</th>
+                <th>Region</th>
+                <th>Zip_Code</th>
+                
+            </tr>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row.Address_ID }}</td>
+                    <td>{{ row.City }}</td>
+                    <td>{{ row.Country }}</td>
+                    <td>{{ row.Line_1 }}</td>
+                    <td>{{ row.Line_2 }}</td>
+                    <td>{{ row.State_Country_Region }}</td>
+                    <td>{{ row.Zip_Postcode }}</td>
+                    <!-- Add other table cells as needed -->
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</body>
+</html>
