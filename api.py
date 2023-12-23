@@ -1,6 +1,6 @@
 from flask import Flask, make_response, jsonify, request,  render_template, redirect, url_for, session
 from flask_mysqldb import MySQL
-
+    
 app = Flask(__name__)
 
 app.config["MYSQL_HOST"] = "localhost"
@@ -33,18 +33,37 @@ def login():
     return render_template("login.html")
 
 
+@app.route("/search", methods=["GET", "POST"])
+def search_addresses():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == "POST":
+        search_term = request.form.get("search_term")
+
+        # Perform the search based on the search term
+        query = """
+            SELECT * FROM maritime.addresses
+            WHERE City LIKE %s
+        """
+        data = data_fetch(query, (f"%{search_term}%",))
+        return render_template("search_results.html", data=data, search_term=search_term)
+
+    return render_template("search.html")
+
+
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
 
 
-
-def data_fetch(query):
+def data_fetch(query, params=None):
     cur = mysql.connection.cursor()
-    cur.execute(query)
+    cur.execute(query, params)
     data = cur.fetchall()
     cur.close()
     return data
+
 
 
 @app.route("/addresses", methods=["GET"])
@@ -155,7 +174,6 @@ def get_params():
     fmt = request.args.get('id')
     foo = request.args.get('aaaa')
     return make_response(jsonify({"format":fmt, "foo":foo}),200)
-
 
 if __name__ == "__main__":
     app.run(debug=True)

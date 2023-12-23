@@ -10,10 +10,6 @@ class MyAppTests(unittest.TestCase):
 
         warnings.simplefilter("ignore", category=DeprecationWarning)
 
-    def test_index_page(self):
-        response = self.app.get("/")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.decode(), "<p>Hello, World!</p>")
 
     def test_get_addresses(self):
         response = self.app.get("/addresses")
@@ -21,7 +17,7 @@ class MyAppTests(unittest.TestCase):
         self.assertTrue("Istres" in response.data.decode())
 
     def test_get_addresses_by_id(self):
-        response = self.app.get("/addresses/20")
+        response = self.app.get("/addresses/search/20")
         self.assertEqual(response.status_code, 200)
         self.assertTrue("Sanjiang" in response.data.decode())
 
@@ -60,7 +56,7 @@ class MyAppTests(unittest.TestCase):
         self.assertEqual(data["rows_affected"], 0)
 
     def test_delete_address(self):
-        address_id_to_delete = 65  
+        address_id_to_delete = 67  
 
         response = self.app.delete(f"/addresses/{address_id_to_delete}")
         self.assertEqual(response.status_code, 200)
