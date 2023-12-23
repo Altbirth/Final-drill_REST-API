@@ -14,11 +14,15 @@ You will see a CRUD - JSON type
 
 Create, Read, Update, and Delete
 
-The security:
+The security: Below are the username and password you can use to login in login page
 
 Username: User1 or User2.
 
 Password: Password1 or Password2
+
+
+After you login you can now start searching a city you desire. Just enter a city you like and see if that city is within the database. 
+After entering the city you like in textbox, click the search button then it will show you all relevant information about the city you search.
 
 
 Below are the https you can use.
