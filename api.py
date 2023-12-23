@@ -58,5 +58,77 @@ def get_addresses_by_clients(id):
         jsonify({"Address_ID": id, "count": len(data), "addresses": data}), 200
     )
 
+
+@app.route("/addresses", methods=["POST"])
+def add_addresses():
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    Line_1 = info["Line_1"]
+    Line_2 = info["Line_2"]
+    City = info["City"]
+    Zip_Postcode = info["Zip_Postcode"]
+    State_Country_Region = info["State_Country_Region"]
+    Country = info["Country"]
+    other_Details = info["other_Details"]
+
+    cur.execute(
+        """
+        INSERT INTO addresses (Line_1, Line_2, City, Zip_Postcode, State_Country_Region, Country, other_Details)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """,
+        (Line_1, Line_2, City, Zip_Postcode, State_Country_Region, Country, other_Details),
+    )
+
+    mysql.connection.commit()
+    print("row(s) affected: {}".format(cur.rowcount))
+    rows_affected = cur.rowcount
+    cur.close()
+
+    return make_response(
+        jsonify({"message": "addresses added successfully", "rows_affected": rows_affected}),
+        201,
+    )
+
+
+@app.route("/addresses/<int:id>", methods=["PUT"])
+def update_addresses(id):
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    Line_1 = info["Line_1"]
+    Line_2 = info["Line_2"]
+    City = info["City"]
+    Zip_Postcode = info["Zip_Postcode"]
+    State_Country_Region = info["State_Country_Region"]
+    Country = info["Country"]
+    other_Details = info["other_Details"]
+    cur.execute(
+        """ UPDATE addresses  SET Line_1 = %s, Line_2 = %s,  City = %s, Zip_Postcode = %s,  State_Country_Region = %s,Country = %s,other_Details = %s WHERE Address_ID = %s """,
+       (Line_1, Line_2, City, Zip_Postcode, State_Country_Region, Country, other_Details, id),
+    )
+    mysql.connection.commit()
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(
+        jsonify(
+            {"message": "addresses updated successfully", "rows_affected": rows_affected}
+        ),
+        200,
+    )
+
+
+@app.route("/addresses/<int:id>", methods=["DELETE"])
+def delete_addresses(id):
+    cur = mysql.connection.cursor()
+    cur.execute(""" DELETE FROM addresses where Address_ID = %s """, (id,))
+    mysql.connection.commit()
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(
+        jsonify(
+            {"message": "addresses deleted successfully", "rows_affected": rows_affected}
+        ),
+        200,
+    )
+
 if __name__ == "__main__":
     app.run(debug=True)
